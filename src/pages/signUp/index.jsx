@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import style from "./style.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 export default function SignUp() {
   const navigate = useNavigate();
   const [userInput, setUserInput] = useState({
     name: "",
-    surname: "",
+    email: "",
     avatar: "",
     phone: "+9989",
     login: "",
@@ -15,16 +16,18 @@ export default function SignUp() {
 
   const [errors, setErrors] = useState({
     name: false,
-    surname: false,
+    email: false,
     avatar: false,
     phone: false,
     login: false,
     password: false,
   });
+
   const [showPassword, setShowPassword] = useState(false);
 
-  function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     let hasError = false;
 
     Object.keys(userInput).forEach((key) => {
@@ -40,12 +43,26 @@ export default function SignUp() {
       return;
     }
 
-    console.log(userInput);
+    try {
+      const req = await fetch("https://api.escuelajs.co/api/v1/users/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...userInput }),
+      });
+      const res = await req.json();
+      localStorage.setItem("users", JSON.stringify([res]));
+    } catch {
+      alert("Error");
+    }
+
     const data = JSON.parse(localStorage.getItem("usersData")) ?? [];
     localStorage.setItem("usersData", JSON.stringify([...data, userInput]));
+    localStorage.setItem("currentUser", JSON.stringify(userInput)); // bu hozirgi user
     setUserInput({
       name: "",
-      surname: "",
+      email: "",
       avatar: "",
       phone: "+9989",
       login: "",
@@ -54,7 +71,7 @@ export default function SignUp() {
 
     localStorage.setItem("user", JSON.stringify(true));
     navigate("/layout/home");
-  }
+  };
 
   return (
     <section>
@@ -77,18 +94,18 @@ export default function SignUp() {
               </span>
             )}
           </label>
-          <label htmlFor="surname">
+          <label htmlFor="email">
             <input
-              value={userInput.surname}
-              className={`${style.input} ${errors.surname && style.error}`}
+              value={userInput.email}
+              className={`${style.input} ${errors.email && style.error}`}
               onChange={(e) =>
-                setUserInput((prev) => ({ ...prev, surname: e.target.value }))
+                setUserInput((prev) => ({ ...prev, email: e.target.value }))
               }
               type="text"
-              id="surname"
-              placeholder="Surname"
+              id="email"
+              placeholder="email"
             />
-            {errors.surname && (
+            {errors.email && (
               <span className={style.errorMessage}>
                 Bu joy bo'sh qolib ketti!
               </span>
@@ -111,7 +128,6 @@ export default function SignUp() {
               </span>
             )}
           </label>
-
           <label htmlFor="phone">
             <input
               value={userInput.phone}
@@ -134,7 +150,6 @@ export default function SignUp() {
               </span>
             )}
           </label>
-
           <label htmlFor="login">
             <input
               value={userInput.login}
@@ -152,7 +167,6 @@ export default function SignUp() {
               </span>
             )}
           </label>
-
           <label htmlFor="password">
             <input
               value={userInput.password}
@@ -175,14 +189,12 @@ export default function SignUp() {
                 onClick={() => setShowPassword((prev) => !prev)}
               />
             )}
-
             {errors.password && (
               <span className={style.errorMessage}>
                 Bu joy bo'sh qolib ketti!
               </span>
             )}
           </label>
-
           <button type="submit" className={style.button}>
             Submit
           </button>

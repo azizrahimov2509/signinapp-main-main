@@ -51,7 +51,7 @@
   cursor: pointer;
   border: none;
   border-radius: 5px;
-  background-color: #4caf50;
+  background-color: rgb(87, 87, 224);
   color: white;
   transition: background-color 0.3s ease;
 }
@@ -79,7 +79,7 @@
   cursor: pointer;
   border: none;
   border-radius: 5px;
-  background-color: #4caf50;
+  background-color: rgb(87, 87, 224);
   color: white;
   transition: background-color 0.3s ease;
 }

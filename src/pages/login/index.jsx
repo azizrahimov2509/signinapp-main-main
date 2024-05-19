@@ -27,8 +27,8 @@ function Login() {
 
     const data = JSON.parse(localStorage.getItem("usersData")) ?? [];
 
-    const user = data.filter(({ login, password }) => {
-      return login === userName && password === passWord;
+    const user = data.filter(({ email, password }) => {
+      return email === userName && password === passWord;
     });
     if (!userName) {
       setUsernameError("Login kiritilmagan!");
@@ -66,15 +66,15 @@ function Login() {
         <div className="screen">
           <div className="screen__content">
             <form className="login" onSubmit={handleSubmit}>
-              <h3 className="info">Login to see many projects!</h3>
+              <h3 className="info">LOGIN</h3>
               <div className="login__field">
                 <FaUser className="login__icon" />
 
                 <input
                   ref={usernameRef}
-                  type="text"
+                  type="email"
                   className="login__input"
-                  placeholder="Login"
+                  placeholder="Email"
                 />
                 {usernameError && (
                   <p className="error-message">{usernameError}</p>
