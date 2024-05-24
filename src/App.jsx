@@ -13,21 +13,21 @@ import Login from "./pages/login";
 import Layout from "./layout";
 import Home from "./pages/home";
 import SignUp from "./pages/signUp";
-import Informs from "./pages/informs";
+import Products from "./components/Products";
 
 function App() {
   function Redirect({ children }) {
     let user = JSON.parse(localStorage.getItem("user")) ?? false;
 
-    return user ? children : <Navigate to="/" />;
+    return user ? children : <Navigate to="/login" />;
   }
 
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
         {/* public routes */}
-        <Route path="/" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
+        <Route path="/" element={<SignUp />} />
+        <Route path="/login" element={<Login />} />
 
         {/* Protected routes */}
         <Route
@@ -39,7 +39,7 @@ function App() {
           }
         >
           <Route path="home" element={<Home />} />
-          <Route path="infos" element={<Informs />} />
+          <Route path="products" element={<Products />} />
         </Route>
       </>
     )

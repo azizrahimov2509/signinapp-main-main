@@ -1,17 +1,61 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import "./style.css";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  FaUser,
-  FaEye,
-  FaEyeSlash,
-  FaInstagram,
-  FaTelegram,
-  FaLinkedin,
-} from "react-icons/fa";
+import { FaUser, FaEye, FaEyeSlash } from "react-icons/fa";
 import { IoLockClosed } from "react-icons/io5";
+import { styled } from "@mui/material/styles";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 
 function Login() {
+  const AntSwitch = styled(Switch)(({ theme }) => ({
+    width: 30,
+    height: 16,
+    padding: 0,
+    display: "flex",
+    "&:active": {
+      "& .MuiSwitch-thumb": {
+        width: 16,
+      },
+      "& .MuiSwitch-switchBase.Mui-checked": {
+        transform: "translateX(10px)",
+      },
+    },
+    "& .MuiSwitch-switchBase": {
+      padding: 2,
+      "&.Mui-checked": {
+        transform: "translateX(14px)",
+        color: "#fff",
+        "& + .MuiSwitch-track": {
+          opacity: 1,
+          backgroundColor:
+            theme.palette.mode === "dark" ? "#177ddc" : "#1890ff",
+        },
+      },
+    },
+    "& .MuiSwitch-thumb": {
+      boxShadow: "0 2px 4px 0 rgb(0 35 11 / 20%)",
+      width: 12,
+      height: 12,
+      borderRadius: 6,
+      transition: theme.transitions.create(["width"], {
+        duration: 200,
+      }),
+    },
+    "& .MuiSwitch-track": {
+      borderRadius: 16 / 2,
+      opacity: 1,
+      backgroundColor:
+        theme.palette.mode === "dark"
+          ? "rgba(255,255,255,.35)"
+          : "rgba(0,0,0,.25)",
+      boxSizing: "border-box",
+    },
+  }));
+
   const usernameRef = useRef();
   const passwordRef = useRef();
   const navigate = useNavigate();
@@ -19,17 +63,25 @@ function Login() {
   const [passwordError, setPasswordError] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
+  useEffect(() => {
+    const rememberedEmail = localStorage.getItem("rememberedEmail");
+    const rememberedPassword = localStorage.getItem("rememberedPassword");
+    if (rememberedEmail) usernameRef.current.value = rememberedEmail;
+    if (rememberedPassword) passwordRef.current.value = rememberedPassword;
+  }, []);
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const userName = usernameRef.current.value.trim();
     const passWord = passwordRef.current.value.trim();
 
-    const data = JSON.parse(localStorage.getItem("usersData")) ?? [];
+    const data = JSON.parse(localStorage.getItem("users")) ?? [];
 
     const user = data.filter(({ email, password }) => {
       return email === userName && password === passWord;
     });
+
     if (!userName) {
       setUsernameError("Login kiritilmagan!");
       return;
@@ -66,27 +118,31 @@ function Login() {
         <div className="screen">
           <div className="screen__content">
             <form className="login" onSubmit={handleSubmit}>
-              <h3 className="info">LOGIN</h3>
-              <div className="login__field">
+              <h3 className="info">Nice to see you!</h3>
+              <h4 className="info-title">
+                Enter your email and password to sign in
+              </h4>
+              <label className="login__field">
+                Email
                 <FaUser className="login__icon" />
-
                 <input
                   ref={usernameRef}
                   type="email"
                   className="login__input"
-                  placeholder="Email"
+                  placeholder="Your email address"
                 />
                 {usernameError && (
                   <p className="error-message">{usernameError}</p>
                 )}
-              </div>
-              <div className="login__field">
+              </label>
+              <label className="login__field">
+                Password
                 <IoLockClosed className="login__icon" />
                 <input
                   ref={passwordRef}
                   type={showPassword ? "text" : "password"}
                   className="login__input"
-                  placeholder="Password"
+                  placeholder=" Your password"
                 />
                 {showPassword ? (
                   <FaEye
@@ -99,47 +155,31 @@ function Login() {
                     onClick={() => setShowPassword((prev) => !prev)}
                   />
                 )}
-
                 {passwordError && (
                   <p className="error-message">{passwordError}</p>
                 )}
-              </div>
+              </label>
               {errorMessage && <p className="error-message">{errorMessage}</p>}
+              <FormGroup>
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <AntSwitch
+                    defaultChecked
+                    inputProps={{ "aria-label": "ant design" }}
+                  />
+                  <Typography color={"white"}>Remember me</Typography>
+                </Stack>
+              </FormGroup>
+
               <button type="submit" className="button login__submit">
-                <span className="button__text">Log In Now</span>
-                <i className="button__icon fas fa-chevron-right"></i>
+                SIGN IN
               </button>
             </form>
-            <div className="social-login">
-              <h3>
-                <Link to={"/signup"} className="signUP">
-                  SignUp
-                </Link>
-              </h3>
-              <div className="social-icons">
-                <Link
-                  to="https://www.instagram.com/rahimov_2520/?hl=ru"
-                  target="blank"
-                >
-                  <FaInstagram className="social-login__icon" />
-                </Link>
-                <Link to="https://t.me/Rahimov552" target="blank">
-                  <FaTelegram className="social-login__icon" />
-                </Link>
-                <Link
-                  to="https://www.linkedin.com/in/aziz-rahimov/"
-                  target="blank"
-                >
-                  <FaLinkedin className="social-login__icon" />
-                </Link>
-              </div>
-            </div>
-          </div>
-          <div className="screen__background">
-            <span className="screen__background__shape screen__background__shape4"></span>
-            <span className="screen__background__shape screen__background__shape3"></span>
-            <span className="screen__background__shape screen__background__shape2"></span>
-            <span className="screen__background__shape screen__background__shape1"></span>
+            <p className="signUp-text">
+              Don't have an account?
+              <Link to={"/"} className="signUP">
+                SignUp
+              </Link>
+            </p>
           </div>
         </div>
       </div>
